@@ -33,6 +33,9 @@ class HtpasswdService(asab.Service):
 		except FileNotFoundError:
 			L.error("File '{}' not found.".format(path))
 			return None
+		except ValueError as e:
+			L.error("Invalid file '{}': {}".format(path, e))
+			return None
 
 		return users
 

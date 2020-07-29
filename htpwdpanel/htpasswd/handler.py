@@ -5,20 +5,16 @@ class HtpasswdHandler(object):
 
 	def __init__(self, app):
 		self.App = app
+		self.TemplateService = app.get_service("jinja2.TemplateService")
+		self.HtpasswdService = app.get_service("htpasswd_webpanel.HtpasswdService")
 		app.WebContainer.WebApp.router.add_get('/', self.GET_users)
 
-	def get_template_service(self):
-		return self.App.get_service("jinja2.TemplateService")
-
 	async def GET_users(self, request):
-		users = [
-			{"name": "Name"}
-		]
 		return aiohttp.web.Response(
-			text=self.get_template_service().render_template(
+			text=self.TemplateService.render_template(
 				request,
 				"users.html",
-				users=users,
+				users=self.HtpasswdService.read_users("default"),
 			),
 			content_type="text/html"
 		)

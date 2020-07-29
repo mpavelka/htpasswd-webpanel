@@ -4,9 +4,11 @@
 
 <table>
 	<tbody>
+		{% if users %}
 		{% for user in users %}
-			<tr><td>{{ user.name }}</td></tr>
+			<tr><td>{{ user }}</td></tr>
 		{% endfor %}
+		{% endif %}
 	</tbody>
 </table>
 

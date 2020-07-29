@@ -2,10 +2,11 @@ import asab
 import asab.web
 from .template import Jinja2TemplateService
 from .htpasswd.handler import HtpasswdHandler
+from .htpasswd.service import HtpasswdService
 
 asab.Config.add_defaults({
 	"htpasswd_webpanel": {
-		"listen": "0.0.0.0:8080"
+		"listen": "0.0.0.0:8080",
 	}
 })
 
@@ -27,8 +28,6 @@ class Application(asab.Application):
 				"listen": asab.Config["htpasswd_webpanel"]["listen"]
 			}
 		)
-
 		Jinja2TemplateService(self)
-
-		# HtpasswdService(self)
+		HtpasswdService(self)
 		HtpasswdHandler(self)

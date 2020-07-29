@@ -130,3 +130,7 @@ dmypy.json
 
 # SublimeText
 *.sublime-workspace
+
+# Site config
+/etc/site.conf
+

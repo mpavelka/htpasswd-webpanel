@@ -1,8 +1,12 @@
 {% extends '@base.html' %}
 
 {% block content %}
-<form action="" method="POST">
+<form action="{{ GenURL('/public/register') }}" method="POST">
+	{% if token %}
 	<input type="hidden" name="token" value="{{ token }}">
+	{% else %}
+	<input type="text" name="token" value="">
+	{% endif %}
 	<p>Name: {{ user }}</p>
 	<p>Password <input type="password" name="password"></p>
 	<input type="submit" value="register">

@@ -13,6 +13,7 @@ class Jinja2TemplateService(asab.Service):
 		)
 
 	async def initialize(self, app):
+		self.URLService = app.get_service("htpasswd_webpanel.URLService")
 		self.Environment.globals.update()
 
 	def render_template(
@@ -30,6 +31,22 @@ class Jinja2TemplateService(asab.Service):
 
 		# Render!
 		return template.render(
+			GenURL=self._tpl_gen_url(request),
 			Request=request,
 			**kwargs
 		)
+
+	def _tpl_gen_url(
+			self,
+			request
+	):
+		""" Creates the template's GenURL function """
+		def f(path, query={}, external=False, static=False):
+			return self.URLService.gen_url(
+				request=request,
+				path=path,
+				query=query,
+				external=external,
+				static=static
+			)
+		return f

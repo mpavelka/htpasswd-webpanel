@@ -1,12 +1,15 @@
 import asab
 import asab.web
 from .template import Jinja2TemplateService
+from .url import URLService
 from .htpasswd.handler import HtpasswdHandler
 from .htpasswd.service import HtpasswdService
 
 asab.Config.add_defaults({
 	"htpasswd_webpanel": {
 		"secret": "",
+		"basepath": "",
+		"staticpath": "",
 		"listen": "0.0.0.0:8080",
 	}
 })
@@ -37,6 +40,7 @@ class Application(asab.Application):
 				"listen": asab.Config["htpasswd_webpanel"]["listen"]
 			}
 		)
+		URLService(self)
 		Jinja2TemplateService(self)
 		HtpasswdService(self)
 		HtpasswdHandler(self)

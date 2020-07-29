@@ -1,6 +1,7 @@
 {% extends '@base.html' %}
 
 {% block content %}
+<h1>Users</h1>
 <table>
 	<tbody>
 		{% if users %}
@@ -18,4 +19,9 @@
 		{% endif %}
 	</tbody>
 </table>
+<h2>New user</h2>
+<form action="{{ GenURL('/token') }}" method="GET">
+	<input type="text" name="user" value="" autocomplete="off">
+	<input type="submit" value="Register">
+</form>
 {% endblock %}

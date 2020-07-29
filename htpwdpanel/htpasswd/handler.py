@@ -17,9 +17,9 @@ class HtpasswdHandler(object):
 		self.HtpasswdService = app.get_service("htpasswd_webpanel.HtpasswdService")
 		app.WebContainer.WebApp.router.add_get('/', self.GET_users)
 		app.WebContainer.WebApp.router.add_post('/delete', self.POST_delete_user)
-		app.WebContainer.WebApp.router.add_get('/register', self.GET_register)
-		app.WebContainer.WebApp.router.add_post('/register', self.POST_register)
 		app.WebContainer.WebApp.router.add_get('/token', self.GET_token)
+		app.WebContainer.WebApp.router.add_get('/public/register', self.GET_register)
+		app.WebContainer.WebApp.router.add_post('/public/register', self.POST_register)
 
 	async def GET_users(self, request):
 		try:
@@ -54,7 +54,7 @@ class HtpasswdHandler(object):
 			L.error("Can't delete user: {}".format(e))
 			raise aiohttp.web.HTTPBadRequest()
 
-		return aiohttp.web.HTTPFound(location="/")
+		return aiohttp.web.HTTPFound(location="./")
 
 	async def POST_register(self, request):
 
@@ -88,7 +88,10 @@ class HtpasswdHandler(object):
 			L.error("Can't add user: {}".format(e))
 			raise aiohttp.web.HTTPBadRequest()
 
-		return aiohttp.web.HTTPFound(location="/")
+		return aiohttp.web.Response(
+			text="Success!",
+			content_type="text/html"
+		)
 
 	async def GET_register(self, request):
 		token = request.query.get("token")
@@ -144,7 +147,11 @@ class HtpasswdHandler(object):
 		)
 
 		return aiohttp.web.Response(
-			text=token.decode(),
+			text=self.TemplateService.render_template(
+				request,
+				"token.html",
+				token=token.decode()
+			),
 			content_type="text/html"
 		)
 
@@ -156,5 +163,4 @@ class HtpasswdHandler(object):
 			),
 			content_type="text/html"
 		)
-
 

@@ -1,15 +1,21 @@
 {% extends '@base.html' %}
 
 {% block content %}
-
 <table>
 	<tbody>
 		{% if users %}
 		{% for user in users %}
-			<tr><td>{{ user }}</td></tr>
+			<tr>
+				<td>{{ user }}</td>
+				<td>
+					<form action="delete" method="POST">
+						<input type="hidden" name="user" value="{{ user }}">
+						<input type="submit" value="delete">
+					</form>
+				</td>
+			</tr>
 		{% endfor %}
 		{% endif %}
 	</tbody>
 </table>
-
 {% endblock %}

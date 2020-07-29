@@ -6,6 +6,7 @@ from .htpasswd.service import HtpasswdService
 
 asab.Config.add_defaults({
 	"htpasswd_webpanel": {
+		"secret": "",
 		"listen": "0.0.0.0:8080",
 	}
 })
@@ -15,6 +16,14 @@ class Application(asab.Application):
 
 	def __init__(self):
 		super().__init__()
+
+		if len(asab.Config["htpasswd_webpanel"]["secret"]) < 16:
+			raise RuntimeError(
+				"""
+				You must configure the application secret that is at least 16 characters long.
+				Refer to the 'secret' key in [htpasswd_webpanel] section in ./etc/htpasswd_webpanel.conf
+				"""
+			)
 
 		# Web module/service
 		self.add_module(asab.web.Module)

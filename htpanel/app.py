@@ -29,9 +29,14 @@ class Application(asab.Application):
 	def __init__(self):
 		super().__init__()
 
+		# Generate safe application secret
 		if len(asab.Config["htpasswd_webpanel"]["secret"]) < 32:
 			L.warn("Weak or empty application secret is set up. It will be generated.")
 			asab.Config["htpasswd_webpanel"]["secret"] = os.urandom(16).hex()
+
+		# Set basepath from envvar
+		if len(asab.Config["htpasswd_webpanel"]["basepath"]) == 0:
+			asab.Config["htpasswd_webpanel"]["basepath"] = os.environ.get('HTPANEL_BASEPATH', '')
 
 		# Web module/service
 		self.add_module(asab.web.Module)

@@ -1,9 +1,18 @@
 import asab
 import asab.web
+import logging
+import os
 from .template import Jinja2TemplateService
 from .url import URLService
 from .htpasswd.handler import HtpasswdHandler
 from .htpasswd.service import HtpasswdService
+
+###
+
+L = logging.getLogger(__name__)
+
+
+###
 
 asab.Config.add_defaults({
 	"htpasswd_webpanel": {
@@ -20,13 +29,9 @@ class Application(asab.Application):
 	def __init__(self):
 		super().__init__()
 
-		if len(asab.Config["htpasswd_webpanel"]["secret"]) < 16:
-			raise RuntimeError(
-				"""
-				You must configure the application secret that is at least 16 characters long.
-				Refer to the 'secret' key in [htpasswd_webpanel] section in ./etc/htpasswd_webpanel.conf
-				"""
-			)
+		if len(asab.Config["htpasswd_webpanel"]["secret"]) < 32:
+			L.warn("Weak or empty application secret is set up. It will be generated.")
+			asab.Config["htpasswd_webpanel"]["secret"] = os.urandom(16).hex()
 
 		# Web module/service
 		self.add_module(asab.web.Module)

@@ -1,2 +1,5 @@
+aiohttp
 asab
 htpasswd
+jinja2
+pyjwt

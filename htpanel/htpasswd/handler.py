@@ -51,7 +51,7 @@ class HtpasswdHandler(object):
 		try:
 			self.HtpasswdService.delete_user(user)
 		except HtpasswdError as e:
-			L.error("Can't delete user: {}".format(e))
+			L.error("Can't delete user. {}".format(e))
 			raise aiohttp.web.HTTPBadRequest()
 
 		return aiohttp.web.HTTPFound(location="./")
@@ -85,7 +85,7 @@ class HtpasswdHandler(object):
 		try:
 			self.HtpasswdService.add_user(user, password)
 		except HtpasswdError as e:
-			L.error("Can't add user: {}".format(e))
+			L.error("Can't add user. {}".format(e))
 			raise aiohttp.web.HTTPBadRequest()
 
 		return aiohttp.web.Response(

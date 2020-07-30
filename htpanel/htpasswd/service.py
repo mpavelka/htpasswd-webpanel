@@ -19,6 +19,7 @@ asab.Config.add_defaults({
 	"htpasswd_file:default": {
 		"path": "/etc/apache2/.htpasswd",
 		"mode": "apr1",
+		"autocreate": "true",
 	}
 })
 
@@ -79,6 +80,14 @@ class HtpasswdService(asab.Service):
 		# Read file config
 		path = file_config_section["path"]
 		mode = file_config_section["mode"]
+		autocreate = file_config_section.getboolean("autocreate")
+
+		# Create file at the path if configured so
+		if autocreate:
+			try:
+				open(path, 'a').close()
+			except OSError as e:
+				L.error("Can't create file: {}".format(e))
 
 		# Create user
 		try:

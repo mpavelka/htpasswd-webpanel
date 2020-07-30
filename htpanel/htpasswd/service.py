@@ -17,7 +17,8 @@ L = logging.getLogger(__name__)
 
 asab.Config.add_defaults({
 	"htpasswd_file:default": {
-		"path": "/etc/apache2/.htpasswd"
+		"path": "/etc/apache2/.htpasswd",
+		"mode": "apr1",
 	}
 })
 
@@ -29,6 +30,11 @@ class HtpasswdService(asab.Service):
 
 	def __init__(self, app):
 		super().__init__(app, service_name="htpasswd_webpanel.HtpasswdService")
+		self._mode_to_htpasswd_mod_map = {
+			"apr1": "md5",
+			"crypt": "crypt",
+			"md5": "md5-base"
+		}
 
 	def read_users(self, file_id="default"):
 		path = self._get_file_path(file_id)
@@ -66,12 +72,20 @@ class HtpasswdService(asab.Service):
 			raise UserNotFound()
 
 	def add_user(self, user, password, file_id="default"):
-		path = self._get_file_path(file_id)
-		if path is None:
+		file_config_section = self._get_file_config_section(file_id)
+		if file_config_section is None:
 			raise FileIdNotFound()
 
+		# Read file config
+		path = file_config_section["path"]
+		mode = file_config_section["mode"]
+
+		# Create user
 		try:
-			with htpasswd.Basic(path) as userdb:
+			with htpasswd.Basic(
+				userdb=path,
+				mode=self._mode_to_htpasswd_mod_map[mode]
+			) as userdb:
 				userdb.add(user, password)
 		except FileNotFoundError:
 			L.error("File '{}' not found.".format(path))
